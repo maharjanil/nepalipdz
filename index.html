@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Provinces, Zones, and Districts of Nepal</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .card {
+      border: none;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      font-weight: bold;
+    }
+
+    .list-group-item {
+      border: none;
+    }
+
+    .province-title {
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #0d6efd;
+    }
+
+    .search-container {
+      margin-bottom: 2rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">Provinces, Zones, and Districts of Nepal</h1>
+    <!-- Search Bar -->
+    <div class="search-container">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search for province, zone, or district...">
+    </div>
+    <!-- Data Container -->
+    <div id="provinces-container">
+      <!-- Provinces, Zones, and Districts will be dynamically added here -->
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    const nepalData = [
+      {
+        province: "Province 1",
+        zones: [
+          { zone: "Koshi", districts: ["Morang", "Sunsari", "Dhankuta", "Sankhuwasabha", "Bhojpur", "Terhathum"] },
+          { zone: "Mechi", districts: ["Taplejung", "Panchthar", "Ilam", "Jhapa"] }
+        ]
+      },
+      {
+        province: "Province 2",
+        zones: [
+          { zone: "Janakpur", districts: ["Dhanusha", "Mahottari", "Sarlahi", "Sindhuli", "Ramechhap"] },
+          { zone: "Narayani", districts: ["Bara", "Parsa", "Rautahat", "Chitwan"] }
+        ]
+      },
+      {
+        province: "Bagmati Province",
+        zones: [
+          { zone: "Bagmati", districts: ["Kathmandu", "Lalitpur", "Bhaktapur", "Dhading", "Kavrepalanchok", "Nuwakot", "Rasuwa", "Sindhupalchok"] }
+        ]
+      },
+      {
+        province: "Gandaki Province",
+        zones: [
+          { zone: "Gandaki", districts: ["Kaski", "Lamjung", "Syangja", "Tanahu", "Gorkha", "Manang", "Mustang"] }
+        ]
+      },
+      {
+        province: "Lumbini Province",
+        zones: [
+          { zone: "Lumbini", districts: ["Rupandehi", "Kapilvastu", "Nawalparasi", "Palpa", "Arghakhanchi", "Gulmi"] }
+        ]
+      },
+      {
+        province: "Karnali Province",
+        zones: [
+          { zone: "Karnali", districts: ["Jumla", "Dolpa", "Humla", "Kalikot", "Mugu"] }
+        ]
+      },
+      {
+        province: "Sudurpashchim Province",
+        zones: [
+          { zone: "Seti", districts: ["Kailali", "Doti", "Achham", "Bajhang", "Bajura"] },
+          { zone: "Mahakali", districts: ["Kanchanpur", "Dadeldhura", "Baitadi", "Darchula"] }
+        ]
+      }
+    ];
+
+    // Function to render data
+    function renderData(data) {
+      const container = document.getElementById("provinces-container");
+      container.innerHTML = ""; // Clear previous content
+
+      data.forEach(provinceData => {
+        const provinceHTML = `
+          <div class="province">
+            <h3 class="province-title">${provinceData.province}</h3>
+            <div class="row">
+              ${provinceData.zones.map(zoneData => `
+                <div class="col-md-4 mb-4">
+                  <div class="card">
+                    <div class="card-header bg-primary text-white">
+                      <h5 class="card-title mb-0">${zoneData.zone} Zone</h5>
+                    </div>
+                    <div class="card-body">
+                      <ul class="list-group list-group-flush">
+                        ${zoneData.districts.map(district => `<li class="list-group-item">${district}</li>`).join("")}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML("beforeend", provinceHTML);
+      });
+    }
+
+    // Function to filter data based on search input
+    function filterData(searchTerm) {
+      const filteredData = nepalData.map(province => ({
+        ...province,
+        zones: province.zones
+          .map(zone => ({
+            ...zone,
+            districts: zone.districts.filter(district =>
+              district.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              zone.zone.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              province.province.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+          }))
+          .filter(zone => zone.districts.length > 0) // Remove zones with no matching districts
+      })).filter(province => province.zones.length > 0); // Remove provinces with no matching zones
+
+      renderData(filteredData);
+    }
+
+    // Event listener for search input
+    document.getElementById("searchInput").addEventListener("input", function (e) {
+      const searchTerm = e.target.value.trim();
+      filterData(searchTerm);
+    });
+
+    // Initial render
+    renderData(nepalData);
+  </script>
+
+  <!-- Bootstrap 5 JS and Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
